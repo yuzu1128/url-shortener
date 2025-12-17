@@ -4,6 +4,9 @@ primary_region = "nrt"
 [build]
   dockerfile = "Dockerfile"
 
+[env]
+  BASE_URL = "https://url-shortener-yuzu.fly.dev"
+
 [http_service]
   internal_port = 8080
   force_https = true

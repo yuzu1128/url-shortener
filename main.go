@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 )
@@ -128,10 +129,16 @@ func handleShorten(w http.ResponseWriter, r *http.Request) {
 	store.urls[shortCode] = entry
 	store.mu.Unlock()
 
+	// Get base URL from environment or default
+	baseURL := os.Getenv("BASE_URL")
+	if baseURL == "" {
+		baseURL = "http://localhost:8080"
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(ShortenResponse{
-		ShortURL:    "http://localhost:8080/" + shortCode,
+		ShortURL:    baseURL + "/" + shortCode,
 		ShortCode:   shortCode,
 		OriginalURL: req.URL,
 	})
