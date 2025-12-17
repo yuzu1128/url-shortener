@@ -13,8 +13,8 @@ import (
 
 // URLStore stores short URLs in memory
 type URLStore struct {
-	mu    sync.RWMutex
-	urls  map[string]URLEntry
+	mu   sync.RWMutex
+	urls map[string]URLEntry
 }
 
 // URLEntry represents a shortened URL
@@ -83,13 +83,8 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// API info
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{
-		"service": "URL Shortener API",
-		"version": "1.0.0",
-		"endpoints": "POST /shorten, GET /{shortCode}, GET /stats/{shortCode}",
-	})
+	// Serve HTML UI
+	http.ServeFile(w, r, "index.html")
 }
 
 func handleShorten(w http.ResponseWriter, r *http.Request) {

@@ -9,5 +9,6 @@ RUN go build -o url-shortener .
 FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/url-shortener .
+COPY index.html .
 EXPOSE 8080
 CMD ["./url-shortener"]
