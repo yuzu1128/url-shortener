@@ -31,25 +31,27 @@
     <div class="glass rounded-2xl p-8 max-w-2xl w-full shadow-2xl">
         <div class="text-center mb-10">
             <h1 class="text-5xl font-bold mb-4 gradient-text">URL Shortener</h1>
-            <p class="text-gray-400">Simple, fast, and robust URL shortening service written in Go.</p>
+            <p class="text-gray-400">Go言語標準ライブラリのみで構築された、シンプルで高速なURL短縮サービス。</p>
         </div>
 
         <!-- Shorten Form -->
         <div class="mb-12">
             <div class="flex gap-2">
-                <input type="url" id="urlInput" placeholder="Paste your long URL here..."
+                <input type="url" id="urlInput" placeholder="短縮したい長いURLを入力してください..."
                     class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">
                 <button onclick="shortenUrl()"
-                    class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-lg transition duration-200">
-                    Shorten
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-3 rounded-lg transition duration-200 whitespace-nowrap">
+                    短縮する
                 </button>
             </div>
             <div id="result" class="hidden mt-6 bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <p class="text-sm text-gray-400 mb-1">Shortened URL:</p>
+                <p class="text-sm text-gray-400 mb-1">短縮URL:</p>
                 <div class="flex items-center justify-between">
                     <a id="shortUrlLink" href="#" target="_blank"
                         class="text-blue-400 hover:underline break-all font-mono text-lg"></a>
-                    <button onclick="copyToClipboard()" class="text-gray-400 hover:text-white ml-2">
+                    <button onclick="copyToClipboard()"
+                        class="text-gray-400 hover:text-white ml-2 p-2 rounded hover:bg-gray-700 transition"
+                        title="コピー">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -62,19 +64,35 @@
 
         <!-- API Reference -->
         <div class="border-t border-gray-800 pt-8">
-            <h2 class="text-xl font-semibold mb-4 text-gray-300">API Documentation</h2>
+            <h2 class="text-xl font-semibold mb-4 text-gray-300">API ドキュメント</h2>
             <div class="space-y-4 text-sm font-mono">
-                <div class="bg-gray-800 p-3 rounded border border-gray-700">
-                    <span class="text-green-400 font-bold">POST</span> /shorten
-                    <div class="text-gray-500 mt-1">{"url": "https://example.com"}</div>
+                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span
+                            class="bg-green-900 text-green-300 px-2 py-0.5 rounded text-xs font-bold border border-green-700">POST</span>
+                        <span class="text-gray-300">/shorten</span>
+                    </div>
+                    <div class="text-gray-500 mb-2">URLを短縮します</div>
+                    <code
+                        class="block bg-gray-900 p-2 rounded text-xs text-gray-400">{"url": "https://example.com"}</code>
                 </div>
-                <div class="bg-gray-800 p-3 rounded border border-gray-700">
-                    <span class="text-blue-400 font-bold">GET</span> /{shortCode}
-                    <div class="text-gray-500 mt-1">Redirect to original URL</div>
+
+                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span
+                            class="bg-blue-900 text-blue-300 px-2 py-0.5 rounded text-xs font-bold border border-blue-700">GET</span>
+                        <span class="text-gray-300">/{shortCode}</span>
+                    </div>
+                    <div class="text-gray-500">元のURLへリダイレクトします</div>
                 </div>
-                <div class="bg-gray-800 p-3 rounded border border-gray-700">
-                    <span class="text-blue-400 font-bold">GET</span> /stats/{shortCode}
-                    <div class="text-gray-500 mt-1">Get click statistics</div>
+
+                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span
+                            class="bg-blue-900 text-blue-300 px-2 py-0.5 rounded text-xs font-bold border border-blue-700">GET</span>
+                        <span class="text-gray-300">/stats/{shortCode}</span>
+                    </div>
+                    <div class="text-gray-500">クリック数などの統計情報を取得します</div>
                 </div>
             </div>
         </div>
@@ -102,17 +120,17 @@
                     link.textContent = data.short_url;
                     result.classList.remove('hidden');
                 } else {
-                    alert(data.error || 'Something went wrong');
+                    alert(data.error || 'エラーが発生しました');
                 }
             } catch (error) {
-                alert('Failed to connect to API');
+                alert('API接続エラー');
             }
         }
 
         function copyToClipboard() {
             const link = document.getElementById('shortUrlLink');
             navigator.clipboard.writeText(link.textContent);
-            alert('Copied to clipboard!');
+            alert('コピーしました！');
         }
     </script>
 </body>
