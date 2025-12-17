@@ -110,6 +110,22 @@ func handleShorten(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get base URL from environment or default
+	baseURL := os.Getenv("BASE_URL")
+	if baseURL == "" {
+		baseURL = "http://localhost:8080"
+	}
+
+	// Check if the shortened URL would actually be shorter
+	// Short URL length = len(baseURL) + 1 (slash) + 8 (short code)
+	estimatedShortLength := len(baseURL) + 1 + 8
+	if len(req.URL) <= estimatedShortLength {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "元のURLの方が短いため、短縮できません"})
+		return
+	}
+
 	// Generate short code
 	shortCode := generateShortCode()
 
@@ -123,12 +139,6 @@ func handleShorten(w http.ResponseWriter, r *http.Request) {
 	store.mu.Lock()
 	store.urls[shortCode] = entry
 	store.mu.Unlock()
-
-	// Get base URL from environment or default
-	baseURL := os.Getenv("BASE_URL")
-	if baseURL == "" {
-		baseURL = "http://localhost:8080"
-	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
